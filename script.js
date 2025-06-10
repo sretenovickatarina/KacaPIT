@@ -1,4 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form');
+    const messageDiv = document.getElementById('form-message');
+    const modal = new bootstrap.Modal(document.getElementById('potvrda-modal'));
+    const modalMessage = document.getElementById('modal-message');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (form.checkValidity()) {
+                const data = {
+                    ime: form.querySelector('#ime').value,
+                    email: form.querySelector('#email').value,
+                    datum: form.querySelector('#datum').value,
+                    poruka: form.querySelector('#poruka').value
+                };
+
+                try {
+                    const response = await fetch('https://formspree.io/f/mwpblyjv', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        messageDiv.innerHTML = '<div class="alert alert-success shadow-sm">Zahtev uspešno poslat!</div>';
+                        modalMessage.textContent = 'Vaš termin je uspešno zakazan. Kontaktiraćemo vas uskoro!';
+                        modal.show();
+                        form.reset();
+                    } else {
+                        messageDiv.innerHTML = '<div class="alert alert-danger shadow-sm">Greška pri slanju. Pokušajte ponovo.</div>';
+                    }
+                } catch (error) {
+                    messageDiv.innerHTML = '<div class="alert alert-danger shadow-sm">Greška pri slanju. Proverite konekciju.</div>';
+                    console.error('Error:', error);
+                }
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+    }
+
+    // Ostali postojeći kod (npr. za navigaciju, lazy loading, lightbox) ostaje isti
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -29,51 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const form = document.getElementById('kontakt-forma');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (form.checkValidity()) {
-                const data = {
-                    ime: form.querySelector('#ime').value,
-                    email: form.querySelector('#email').value,
-                    datum: form.querySelector('#datum').value,
-                    poruka: form.querySelector('#poruka').value
-                };
-                try {
-                    const response = await fetch('https://formspree.io/f/xqabkpwn', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-                    const messageDiv = document.getElementById('form-message');
-                    const modal = new bootstrap.Modal(document.getElementById('potvrda-modal'));
-                    const modalMessage = document.getElementById('modal-message');
-                    if (response.ok) {
-                        messageDiv.innerHTML = '<div class="alert alert-success">Zahtev uspešno poslat!</div>';
-                        modalMessage.textContent = 'Vaš termin je uspešno zakazan. Kontaktiraćemo vas uskoro!';
-                        modal.show();
-                        form.reset();
-                        localStorage.setItem('kontakt-podaci', JSON.stringify(data));
-                    } else {
-                        messageDiv.innerHTML = '<div class="alert alert-danger">Greška pri slanju. Pokušajte ponovo.</div>';
-                    }
-                } catch {
-                    messageDiv.innerHTML = '<div class="alert alert-danger">Greška pri slanju. Proverite konekciju.</div>';
-                }
-            } else {
-                form.classList.add('was-validated');
-            }
-        });
-
-        const savedData = localStorage.getItem('kontakt-podaci');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            form.querySelector('#ime').value = data.ime || '';
-            form.querySelector('#email').value = data.email || '';
-        }
-    }
-
     const lazyImages = document.querySelectorAll('.lazy-load');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -84,17 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.1 });
     lazyImages.forEach(image => observer.observe(image));
-
-    const sections = document.querySelectorAll('.animate-on-scroll');
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                sectionObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.2 });
-    sections.forEach(section => sectionObserver.observe(section));
 
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = lightbox.querySelector('.lightbox-content');
