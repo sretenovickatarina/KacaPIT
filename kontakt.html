@@ -32,26 +32,25 @@
             <h2 class="text-center mb-5">Kontaktirajte nas</h2>
             <div class="row">
                 <div class="col-md-6 mx-auto">
-                    <form id="kontakt-forma" action="https://formspree.io/f/mwpblyjv" method="POST">
-                        
+                    <form action="https://formspree.io/f/mwpblyjv" method="POST">
                         <div class="mb-3">
                             <label for="ime" class="form-label">Ime i prezime</label>
-                            <input type="text" class="form-control" id="ime" required>
+                            <input type="text" class="form-control" id="ime" name="ime" required>
                             <div class="invalid-feedback">Unesite ime i prezime.</div>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <input type="email" class="form-control" id="email" name="email" required>
                             <div class="invalid-feedback">Unesite važeću email adresu.</div>
                         </div>
                         <div class="mb-3">
                             <label for="datum" class="form-label">Željeni datum termina</label>
-                            <input type="date" class="form-control" id="datum" required>
+                            <input type="date" class="form-control" id="datum" name="datum" required>
                             <div class="invalid-feedback">Izaberite datum.</div>
                         </div>
                         <div class="mb-3">
                             <label for="poruka" class="form-label">Poruka</label>
-                            <textarea class="form-control" id="poruka" rows="4"></textarea>
+                            <textarea class="form-control" id="poruka" name="poruka" rows="4"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Pošalji zahtev</button>
                     </form>
