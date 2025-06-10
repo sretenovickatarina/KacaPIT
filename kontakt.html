@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt - Smile Ordinacija</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="img/logo.png">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="img/logo.png" alt="Smile Logo" height="40"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Početna</a></li>
+                    <li class="nav-item"><a class="nav-link" href="o-nama.html">O nama</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cenovnik.html">Cenovnik</a></li>
+                    <li class="nav-item"><a class="nav-link" href="galerija.html">Galerija</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="kontakt.html">Kontakt</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Kontaktirajte nas</h2>
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    <form id="kontakt-forma" novalidate>
+                        <div class="mb-3">
+                            <label for="ime" class="form-label">Ime i prezime</label>
+                            <input type="text" class="form-control" id="ime" required>
+                            <div class="invalid-feedback">Unesite ime i prezime.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                            <div class="invalid-feedback">Unesite važeću email adresu.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="datum" class="form-label">Željeni datum termina</label>
+                            <input type="date" class="form-control" id="datum" required>
+                            <div class="invalid-feedback">Izaberite datum.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="poruka" class="form-label">Poruka</label>
+                            <textarea class="form-control" id="poruka" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Pošalji zahtev</button>
+                    </form>
+                    <div id="form-message" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="potvrda-modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Potvrda zakazivanja</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p>© 2025 Smile Ordinacija. Sva prava zadržana.</p>
+            <p>Kontakt: +381 123 456 789 | info@smileordinacija.rs</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
