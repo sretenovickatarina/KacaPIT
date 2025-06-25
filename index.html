@@ -41,7 +41,7 @@
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="card h-100 shadow-sm">
-                        <img src="img/usluga1.jpg" alt="Estetska stomatologija">
+                        <img src="img/usluga1.jpg" alt="Estetska stomatologija" class="card-img-top">
                         <div class="card-body">
                             <h5 class="card-title text-dark">Estetska stomatologija</h5>
                             <p class="card-text text-dark">Izbeljivanje zuba, furniri, kompozitne ispune.</p>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card h-100 shadow-sm">
-                        <img src="img/usluga2.jpg" alt="Implantologija">
+                        <img src="img/usluga2.jpg" alt="Implantologija" class="card-img-top">
                         <div class="card-body">
                             <h5 class="card-title text-dark">Implantologija</h5>
                             <p class="card-text text-dark">Zamena zuba implantatima visokog kvaliteta.</p>
@@ -76,7 +76,162 @@
         </div>
     </footer>
 
+    <div id="chat-container" class="chat-container">
+        <div id="chat-header" class="chat-header">Chat Bot <span id="close-chat" class="close-btn">×</span></div>
+        <div id="chat-messages" class="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Upišite poruku...">
+            <button id="send-message" class="btn btn-primary">Pošalji</button>
+        </div>
+    </div>
+
+    <button id="open-chat" class="chat-button">Chat</button>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const animateElements = document.querySelectorAll('.animate-text, .animate-button');
+            animateElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.style.transition = 'opacity 1s ease-in-out, transform 1s ease-in-out';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 300);
+            });
+
+            const services = [
+                { name: 'Pregled i dijagnostika', description: 'Kompletan pregled usne duplje i rendgen', price: '5,000 RSD', duration: '30 min', image: 'images/pregled.jpg' },
+                { name: 'Izbjeljivanje zuba', description: 'Profesionalno izbjeljivanje za blistav osmeh', price: '25,000 RSD', duration: '60 min', image: 'images/izbjeljivanje.jpg' },
+                { name: 'Plombiranje', description: 'Popravka karijesa sa kompozitnim materijalom', price: '7,000 RSD', duration: '45 min', image: 'images/plomba.jpg' },
+                { name: 'Vađenje zuba', description: 'Bezbolno vađenje zuba uz lokalnu anesteziju', price: '6,000 RSD', duration: '30 min', image: 'images/vadjenje.jpg' },
+                { name: 'Protetski radovi', description: 'Krune, mostovi i proteze po meri', price: 'od 20,000 RSD', duration: 'Zavisi od tretmana', image: 'images/protetika.jpg' },
+                { name: 'Ortodoncija', description: 'Fiksni ili mobilni aparatići za zube', price: 'od 100,000 RSD', duration: 'Dugoročni tretman', image: 'images/ortodoncija.jpg' },
+                { name: 'Implantati', description: 'Ugradnja zubnih implantata visokog kvaliteta', price: 'od 80,000 RSD', duration: 'Zavisi od postupka', image: 'images/implant.jpg' }
+            ];
+
+            const chatContainer = document.getElementById('chat-container');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendMessage = document.getElementById('send-message');
+            const closeChat = document.getElementById('close-chat');
+            const openChatButton = document.getElementById('open-chat');
+            let conversationContext = [];
+            let userPreferences = { service: null, urgency: null };
+
+            openChatButton.addEventListener('click', () => {
+                chatContainer.style.display = 'block';
+                openChatButton.style.display = 'none';
+            });
+
+            closeChat.addEventListener('click', () => {
+                chatContainer.style.display = 'none';
+                openChatButton.style.display = 'block';
+                conversationContext = [];
+                userPreferences = { service: null, urgency: null };
+            });
+
+            sendMessage.addEventListener('click', () => {
+                const message = chatInput.value.trim().toLowerCase();
+                if (message) {
+                    addMessage('Korisnik: ' + chatInput.value, 'user-message', 'images/user.jpg');
+                    processMessage(message);
+                    chatInput.value = '';
+                }
+            });
+
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && chatInput.value.trim()) {
+                    sendMessage.click();
+                }
+            });
+
+            function addMessage(text, className, logoSrc) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message-container');
+
+                const logoImg = document.createElement('img');
+                logoImg.classList.add('message-logo');
+                logoImg.src = logoSrc || 'images/smile-bot.jpg';
+                logoImg.alt = className.includes('bot') ? 'Smile Bot Logo' : 'User Logo';
+
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('message', className);
+                textDiv.textContent = text;
+
+                messageDiv.appendChild(logoImg);
+                messageDiv.appendChild(textDiv);
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function processMessage(message) {
+                conversationContext.push(message);
+                let response = '';
+                let foundServices = services.filter(service => 
+                    service.name.toLowerCase().includes(message)
+                );
+
+                if (message.includes('hitno') || message.includes('odmah')) {
+                    userPreferences.urgency = 'hitno';
+                }
+                if (message.includes('pregled') || message.includes('izbjeljivanje') || message.includes('plomba') || message.includes('vađenje') || message.includes('protetika') || message.includes('ortodoncija') || message.includes('implant')) {
+                    userPreferences.service = message.match(/(pregled|izbjeljivanje|plomba|vađenje|protetika|ortodoncija|implant)/)?.[0];
+                }
+
+                if (message.includes('pomoć') || message.includes('pomozite')) {
+                    response = 'Zdravo! Ja sam Smile Bot, vaš asistent za Zubarsku ordinaciju Smile. Mogu vam pomoći sa zakazivanjem termina, informacijama o uslugama (npr. "izbjeljivanje zuba"), cenama ili preporukama. Recite mi šta vam treba!';
+                } else if (message.includes('zakazi') || message.includes('termin')) {
+                    response = userPreferences.urgency === 'hitno' 
+                        ? 'Za hitan termin, molimo kontaktirajte nas direktno na +381 123 456 789. Alternativno, recite mi za koju uslugu želite termin (npr. "pregled") i kada vam odgovara!' 
+                        : 'Za koju uslugu želite zakazati termin (npr. "pregled", "izbjeljivanje")? Navedite datum i vreme!';
+                } else if (message.includes('najjeftinija')) {
+                    const cheapest = services.reduce((cheapest, current) => 
+                        parseFloat(cheapest.price.replace(/[^0-9]/g, '')) < parseFloat(current.price.replace(/[^0-9]/g, '')) ? cheapest : current
+                    );
+                    response = `Najjeftinija usluga je ${cheapest.name} za ${cheapest.price}. Trajanje: ${cheapest.duration}. Želite li zakazati termin za ovu uslugu?`;
+                } else if (message.includes('poredi')) {
+                    const servicesToCompare = services.filter(service => message.includes(service.name.toLowerCase())).slice(0, 2);
+                    if (servicesToCompare.length === 2) {
+                        response = `Poređenje ${servicesToCompare.map(s => s.name).join(' i ')}:\n`;
+                        servicesToCompare.forEach(service => {
+                            response += `- ${service.name}: Cena ${service.price}, Trajanje ${service.duration}, ${service.description}\n`;
+                        });
+                        response += `Preporučujem ${servicesToCompare[0].name} ako tražite brzu uslugu. Koja vam više odgovara?`;
+                    } else {
+                        response = 'Navedite dve usluge za poređenje (npr. "poredi pregled i plombiranje"). Mogu vam pomoći sa izborom!';
+                    }
+                } else if (message.includes('preporuči')) {
+                    const recommended = userPreferences.service 
+                        ? services.find(s => s.name.toLowerCase().includes(userPreferences.service))
+                        : services[0];
+                    if (recommended) {
+                        response = `Preporučujem ${recommended.name}: ${recommended.description}. Cena: ${recommended.price}, Trajanje: ${recommended.duration}. Želite li zakazati termin ili saznati više?`;
+                    } else {
+                        response = 'Nisam pronašao uslugu prema vašim preferencijama. Recite mi više (npr. "preporuči za osmeh" ili "jeftinu uslugu")!';
+                    }
+                } else if (foundServices.length > 0) {
+                    const service = foundServices[0];
+                    response = `Detalji za ${service.name}:\n- Opis: ${service.description}\n- Cena: ${service.price}\n- Trajanje: ${service.duration}\n`;
+                    if (message.includes('detalji')) {
+                        response += `Dodatno: Ova usluga je idealna za ${service.name.includes('Pregled') ? 'prvu posetu' : service.name.includes('Izbjeljivanje') ? 'estetske popravke' : 'dugoročnu negu'}.`;
+                    }
+                    response += `Želite li zakazati termin ili saznati o drugim uslugama?`;
+                } else if (message.includes('kontakt')) {
+                    response = 'Kontaktirajte nas na +381 123 456 789 ili info@smile.rs. Ako imate pitanje o uslugama, mogu odmah pomoći – recite mi šta vam treba!';
+                } else if (message.includes('radno vreme')) {
+                    response = 'Radimo od ponedeljka do petka, 08:00-20:00, i subotom 09:00-15:00. Želite li zakazati termin?';
+                } else {
+                    response = `Nisam siguran šta mislite na "${message}". Možda ste mislili na uslugu (npr. "pregled") ili zakazivanje? Preporučujem ${services[0].name} – želite li detalje?`;
+                }
+
+                addMessage('Bot: ' + response, 'bot-message', 'images/smile-bot.jpg');
+            }
+
+            addMessage('Bot: Zdravo! Ja sam Smile Bot, vaš asistent za Zubarsku ordinaciju Smile. Mogu vam pomoći sa zakazivanjem, informacijama o uslugama ili preporukama. Šta vas zanima? (11:56 PM, 25.06.2025)', 'bot-message', 'images/smile-bot.jpg');
+
+            chatContainer.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
